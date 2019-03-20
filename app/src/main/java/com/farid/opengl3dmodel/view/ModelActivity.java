@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
+import android.hardware.*;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +52,12 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
 
     private Boolean previewing = true;
 
+    SensorManager sensorManager;
+    Sensor rotationVectorSensor;
+    SensorEventListener rvListener;
+
+    float[] rotationMatrix = new float[16];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +81,66 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
             }
         }
         Log.i("Renderer", "Params: uri '" + paramUri + "'");
+
+        sensorManager =
+                (SensorManager) getSystemService(SENSOR_SERVICE);
+        rotationVectorSensor =
+                sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        // Create a listener
+        rvListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                // More code goes here
+
+                SensorManager.getRotationMatrixFromVector(
+                        rotationMatrix, sensorEvent.values);
+                // Remap coordinate system
+                float[] remappedRotationMatrix = new float[16];
+                SensorManager.remapCoordinateSystem(rotationMatrix,
+                        SensorManager.AXIS_X,
+                        SensorManager.AXIS_Z,
+                        remappedRotationMatrix);
+
+                // Convert to orientations
+                float[] orientations = new float[3];
+                SensorManager.getOrientation(remappedRotationMatrix, orientations);
+
+                for (int i = 0; i < 3; i++) {
+                    orientations[i] = (float) (Math.toDegrees(orientations[i]));
+                }
+
+                if (orientations[0] > 160) {
+                    Log.i("Rott+", "X: " + orientations[0] + " Y: " + orientations[1]);
+                    if(orientations[1] >30){
+                        gLView.setVisibility(View.GONE);
+                    }else if(orientations[1]<-30){
+                        gLView.setVisibility(View.GONE);
+                    }else{
+                        gLView.setVisibility(View.VISIBLE);
+                    }
+                } else if (orientations[0] < -160) {
+                    Log.i("Rott-", "X: " + orientations[0] + " Y: " + orientations[1]);
+                    if(orientations[1] >30){
+                        gLView.setVisibility(View.GONE);
+                    }else if(orientations[1]<-30){
+                        gLView.setVisibility(View.GONE);
+                    }else{
+                        gLView.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    gLView.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+
+// Register it
+        sensorManager.registerListener(rvListener,
+                rotationVectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         handler = new Handler(getMainLooper());
 
@@ -163,40 +229,12 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
         setupOnSystemVisibilityChangeListener();
     }
 
-    public static void setCameraDisplayOrientation(Activity activity,
-                                                   int cameraId, android.hardware.Camera camera) {
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-        android.hardware.Camera.CameraInfo info =
-                new android.hardware.Camera.CameraInfo();
-
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        int degrees = 0;
-
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        camera.setDisplayOrientation(result);
+        // Register it
+        sensorManager.unregisterListener(rvListener);
     }
 
     @Override
