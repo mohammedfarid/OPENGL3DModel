@@ -194,18 +194,18 @@ public class TouchController {
                 // Log.d(TAG, "Translating camera (dx,dy) '" + dx1 + "','" + dy1 + "'...");
                 dx1 = (float) (dx1 / max * Math.PI * 2);
                 dy1 = (float) (dy1 / max * Math.PI * 2);
-                camera.translateCamera(dx1, dy1);
+                //camera.translateCamera(dx1, dy1);
             } else if (pointerCount == 2) {
                 if (fingersAreClosing) {
                     touchStatus = TOUCH_STATUS_ZOOMING_CAMERA;
                     float zoomFactor = (length - previousLength) / max * mRenderer.getFar();
                     Log.i(TAG, "Zooming '" + zoomFactor + "'...");
-                    camera.MoveCameraZ(zoomFactor);
+                    //camera.MoveCameraZ(zoomFactor);
                 }
                 if (isRotating) {
                     touchStatus = TOUCH_STATUS_ROTATING_CAMERA;
                     Log.i(TAG, "Rotating camera '" + Math.signum(rotationVector[2]) + "'...");
-                    camera.Rotate((float) (Math.signum(rotationVector[2]) / Math.PI) / 4);
+                    //camera.Rotate((float) (Math.signum(rotationVector[2]) / Math.PI) / 4);
                 }
             }
 

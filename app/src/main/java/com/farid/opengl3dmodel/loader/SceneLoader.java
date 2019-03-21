@@ -171,7 +171,7 @@ public class SceneLoader implements LoaderTask.Callback {
 
         // initial camera animation. animate if user didn't touch the screen
         if (!userHasInteracted) {
-            animateCamera();
+            //animateCamera();
         }
 
         if (objects.isEmpty()) return;
