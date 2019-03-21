@@ -17,6 +17,7 @@ import com.farid.opengl3dmodel.loader.SceneLoader;
 import org.andresoviedo.util.android.ContentUtils;
 
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * This activity represents the container for our 3D viewer.
@@ -58,6 +59,8 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
 
     float[] rotationMatrix = new float[16];
 
+    int randomAngleX = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +89,7 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
                 (SensorManager) getSystemService(SENSOR_SERVICE);
         rotationVectorSensor =
                 sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        randomAngleX = randomAngleXValue();
         // Create a listener
         rvListener = new SensorEventListener() {
             @Override
@@ -109,22 +113,15 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
                     orientations[i] = (float) (Math.toDegrees(orientations[i]));
                 }
 
-                if (orientations[0] > 160) {
-                    Log.i("Rott+", "X: " + orientations[0] + " Y: " + orientations[1]);
-                    if(orientations[1] >30){
+                Log.i("OreRandDownUp", "Oriantations : " + (int) orientations[0] + "\n Angle : " + randomAngleX + "\n Down : " + checkDownRandomXValue(randomAngleX - 30) + "\n UP : " + checkUpperRandomXValue(randomAngleX + 30));
+                if (((int) orientations[0] >= checkDownRandomXValue(randomAngleX - 30)) && ((int) orientations[0] < checkUpperRandomXValue(randomAngleX + 30))) {
+                    Log.i("Rott+", "X: " + orientations[0]);
+                    Log.i("OreRandDownUp", "true");
+                    if (orientations[1] > 30) {
                         gLView.setVisibility(View.GONE);
-                    }else if(orientations[1]<-30){
+                    } else if (orientations[1] < -30) {
                         gLView.setVisibility(View.GONE);
-                    }else{
-                        gLView.setVisibility(View.VISIBLE);
-                    }
-                } else if (orientations[0] < -160) {
-                    Log.i("Rott-", "X: " + orientations[0] + " Y: " + orientations[1]);
-                    if(orientations[1] >30){
-                        gLView.setVisibility(View.GONE);
-                    }else if(orientations[1]<-30){
-                        gLView.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         gLView.setVisibility(View.VISIBLE);
                     }
                 } else {
@@ -227,6 +224,30 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
         ContentUtils.printTouchCapabilities(getPackageManager());
 
         setupOnSystemVisibilityChangeListener();
+    }
+
+    private int randomAngleXValue() {
+        return new Random().nextInt((180 - (-180)) + 1) + (-180);
+    }
+
+    private int checkUpperRandomXValue(int xValue) {
+        if (xValue > 180) {
+            Log.i("RandomValueUp", xValue + "");
+            return (360 - xValue);
+        } else {
+            Log.i("RandomValueUp", xValue + "");
+            return xValue;
+        }
+    }
+
+    private int checkDownRandomXValue(int xValue) {
+        if (xValue < -180) {
+            Log.i("RandomValueDown", xValue + "");
+            return (360 + xValue);
+        } else {
+            Log.i("RandomValueDown", xValue + "");
+            return xValue;
+        }
     }
 
     @Override
