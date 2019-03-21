@@ -90,6 +90,7 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
         rotationVectorSensor =
                 sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         randomAngleX = randomAngleXValue();
+        //randomAngleX = 15;
         // Create a listener
         rvListener = new SensorEventListener() {
             @Override
@@ -112,17 +113,15 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
                 for (int i = 0; i < 3; i++) {
                     orientations[i] = (float) (Math.toDegrees(orientations[i]));
                 }
-
-                Log.i("OreRandDownUp", "Oriantations : " + (int) orientations[0] + "\n Angle : " + randomAngleX + "\n Down : " + checkDownRandomXValue(randomAngleX - 30) + "\n UP : " + checkUpperRandomXValue(randomAngleX + 30));
                 if (((int) orientations[0] >= checkDownRandomXValue(randomAngleX - 30)) && ((int) orientations[0] < checkUpperRandomXValue(randomAngleX + 30))) {
-                    Log.i("Rott+", "X: " + orientations[0]);
-                    Log.i("OreRandDownUp", "true");
                     if (orientations[1] > 30) {
                         gLView.setVisibility(View.GONE);
                     } else if (orientations[1] < -30) {
                         gLView.setVisibility(View.GONE);
                     } else {
                         gLView.setVisibility(View.VISIBLE);
+                        Log.i("RandomUpDown", "rand " + randomAngleX + " down " + checkDownRandomXValue(randomAngleX - 30) + "up " + checkUpperRandomXValue(randomAngleX + 30));
+                        scene.move(orientationValue(randomAngleX, orientations[0]), orientations[1] / 30f);
                     }
                 } else {
                     gLView.setVisibility(View.GONE);
@@ -149,6 +148,7 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
             scene = new SceneLoader(this);
         }
         scene.init();
+
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
@@ -232,21 +232,27 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
 
     private int checkUpperRandomXValue(int xValue) {
         if (xValue > 180) {
-            Log.i("RandomValueUp", xValue + "");
             return (360 - xValue);
         } else {
-            Log.i("RandomValueUp", xValue + "");
             return xValue;
         }
     }
 
     private int checkDownRandomXValue(int xValue) {
         if (xValue < -180) {
-            Log.i("RandomValueDown", xValue + "");
             return (360 + xValue);
         } else {
-            Log.i("RandomValueDown", xValue + "");
             return xValue;
+        }
+    }
+
+    private float orientationValue(int randomAngleX, float orX) {
+        if ((randomAngleX >= 150 && randomAngleX <= 180) && (orX <= -150 && orX >= -180)) {
+            return ((randomAngleX) - ((orX + 360)) / 30f);
+        } else if ((randomAngleX <= -150 && randomAngleX >= -180) && (orX >= 150 && orX <= 180)) {
+            return (((randomAngleX) - (orX - 360)) / 30f);
+        } else {
+            return ((randomAngleX - orX) / 30f);
         }
     }
 
