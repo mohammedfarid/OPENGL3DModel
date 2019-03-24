@@ -407,7 +407,7 @@ public class SceneLoader implements LoaderTask.Callback {
         Object3DData objectToSelect = objects.get(0);
         Log.i("objcet", "X: " + objectToSelect.getPositionX() + " Y: " + objectToSelect.getPositionY() + " Z: " + objectToSelect.getPositionZ());
         Log.i("RandomUpDown", "X: " + x + "Y: " + y);
-        float[] postoion = {x, y, 0f};
-        objectToSelect.setPosition(postoion);
+        float[] position = {x, y, 0f};
+        objectToSelect.setPosition(position);
     }
 }
