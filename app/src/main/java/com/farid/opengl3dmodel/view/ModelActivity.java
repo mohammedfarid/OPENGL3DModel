@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.*;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.farid.opengl3dmodel.R;
 import com.farid.opengl3dmodel.loader.SceneLoader;
@@ -60,6 +61,7 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
     float[] rotationMatrix = new float[16];
 
     int randomAngleX = 0;
+    RelativeLayout parentRL, modelRL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +160,8 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
         gLView = findViewById(R.id.model);
         gLView.init(this);
 
+        parentRL = findViewById(R.id.parentRl);
+        modelRL = findViewById(R.id.modelRl);
         SurfaceView surfaceView = findViewById(R.id.surfaceView);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
 
@@ -385,5 +389,4 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
                 }
         }
     }
-
 }

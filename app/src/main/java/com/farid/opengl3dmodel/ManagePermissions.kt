@@ -6,7 +6,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 
-class ManagePermissions(val activity: Activity, val list: List<String>, val code: Int) {
+class ManagePermissions(private val activity: Activity, private val list: List<String>, private val code: Int) {
 
     // Check permissions at runtime
     fun checkPermissions(): Boolean {
@@ -24,7 +24,7 @@ class ManagePermissions(val activity: Activity, val list: List<String>, val code
     private fun isPermissionsGranted(): Int {
         // PERMISSION_GRANTED : Constant Value: 0
         // PERMISSION_DENIED : Constant Value: -1
-        var counter = 0;
+        var counter = 0
         for (permission in list) {
             counter += ContextCompat.checkSelfPermission(activity, permission)
         }

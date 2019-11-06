@@ -408,6 +408,14 @@ public class SceneLoader implements LoaderTask.Callback {
         Log.i("objcet", "X: " + objectToSelect.getPositionX() + " Y: " + objectToSelect.getPositionY() + " Z: " + objectToSelect.getPositionZ());
         Log.i("RandomUpDown", "X: " + x + "Y: " + y);
         float[] position = {x, y, 0f};
-        objectToSelect.setPosition(position);
+       //objectToSelect.setPosition(position);
+
+        // scene control
+//        Log.i("Data", "Far " + mr.getFar() + " Near" + mr.getNear() +
+//                "\n View Matrix " + Arrays.toString(mr.getModelViewMatrix()) +
+//                "\n ViewProject Matrix " + Arrays.toString(mr.getModelProjectionMatrix()) +
+//                "\n Height " + mr.getHeight() + " Width" + mr.getWidth());
+        objectToSelect.center(position);
+        //camera.translateCamera();
     }
 }

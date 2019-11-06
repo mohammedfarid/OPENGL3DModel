@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -19,9 +17,7 @@ import org.andresoviedo.util.android.AndroidURLStreamHandlerFactory
 import org.andresoviedo.util.android.AssetUtils
 import org.andresoviedo.util.android.ContentUtils
 import java.net.URL.setURLStreamHandlerFactory
-import java.net.URLStreamHandler
-import java.net.URLStreamHandlerFactory
-import java.util.HashMap
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     // Custom handler: org/andresoviedo/app/util/url/android/Handler.class
@@ -39,29 +35,23 @@ class MainActivity : AppCompatActivity() {
 
     private val loadModelParameters = HashMap<String, Any>()
 
-    private val PermissionsRequestCode = 123
-    private lateinit var managePermissions: ManagePermissions
+    private val RECORD_REQUEST_CODE = 101
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        permissionSetup()
+
         button.setOnClickListener {
-            loadModelFromAssets()
+            permissionSetup()
         }
+    }
 
-        val list = listOf<String>(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-
-        // Initialize a new instance of ManagePermissions class
-        managePermissions = ManagePermissions(this, list, PermissionsRequestCode)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            managePermissions.checkPermissions()
-
+    private fun loadAndOpenCamera() {
+        ContentUtils.provideAssets(this)
+        launchModelRendererActivity(Uri.parse("assets://com.farid.opengl3dmodel/models/ToyPlane.obj"))
     }
 
     private fun loadModelFromAssets() {
@@ -88,6 +78,40 @@ class MainActivity : AppCompatActivity() {
         }
 
         startActivity(intent)
+        finish()
+    }
+
+    private fun permissionSetup() {
+        if (ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(
+                this@MainActivity,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(
+                this@MainActivity,
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                RECORD_REQUEST_CODE
+            )
+        } else {
+            loadAndOpenCamera()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            RECORD_REQUEST_CODE -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    toast(resources.getString(R.string.permission_denied))
+                } else {
+                    toast(resources.getString(R.string.permission_granted))
+                    loadAndOpenCamera()
+                }
+            }
+        }
     }
 }
 

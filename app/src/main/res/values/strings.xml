@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OPENGL3DMODEL</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="permission_granted">Permission Granted</string>
 </resources>
