@@ -123,7 +123,7 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
                     } else {
                         gLView.setVisibility(View.VISIBLE);
                         Log.i("RandomUpDown", "rand " + randomAngleX + " down " + checkDownRandomXValue(randomAngleX - 30) + "up " + checkUpperRandomXValue(randomAngleX + 30));
-                        scene.move(orientationValue(randomAngleX, orientations[0]), orientations[1] / 30f);
+                        //scene.move(orientationValue(randomAngleX, orientations[0]), orientations[1] / 30f);
                     }
                 } else {
                     gLView.setVisibility(View.GONE);
@@ -145,7 +145,8 @@ public class ModelActivity extends Activity implements SurfaceTexture.OnFrameAva
         // Create our 3D sceneario
         if (paramUri == null) {
             //scene = new ExampleSceneLoader(this);
-            scene = new SceneLoader(this);
+           // scene = new SceneLoader(this);
+            Toast.makeText(this,"3D model Not Load",Toast.LENGTH_LONG).show();
         } else {
             scene = new SceneLoader(this);
         }

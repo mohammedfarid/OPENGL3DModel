@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/OPENGL3DMODEL.iml" filepath="$PROJECT_DIR$/OPENGL3DMODEL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OPENGL3DModel.iml" filepath="$PROJECT_DIR$/OPENGL3DModel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/OPENGL3DModel-app.iml" filepath="$PROJECT_DIR$/app/OPENGL3DModel-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/engine/OPENGL3DModel-engine.iml" filepath="$PROJECT_DIR$/engine/OPENGL3DModel-engine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StudioProjects-OPENGL3DModel.iml" filepath="$PROJECT_DIR$/StudioProjects-OPENGL3DModel.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/engine/engine.iml" filepath="$PROJECT_DIR$/engine/engine.iml" />
     </modules>
